@@ -1,4 +1,4 @@
-# kaDiffusion
+# ImagetoPrompts
 
 `kaDiffusion` is used to [Stable Diffusion - Image to Prompts](https://www.kaggle.com/competitions/stable-diffusion-image-to-prompts/overview), and now is still under developing.
 
