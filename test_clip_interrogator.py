@@ -72,14 +72,14 @@ class my_config:
     st_model_path = "lib/sentence-transformers-222/all-MiniLM-L6-v2"
 
 
-def my_interrogate_classic(image: Image, image_features: torch.Tensor, caption: str, ci, cos, medium_features_array, movement_features_array, flaves_features_array) -> str:
+def my_interrogate_classic(image: Image, image_features: torch.Tensor, caption: str) -> str:
 #     print(image)
 #     caption = ci.generate_caption(image)
     
 #     image_features = ci.image_to_features(image)
 
     medium = [ci.mediums.labels[i] for i in cos(image_features, medium_features_array).topk(1).indices][0]
-    movement = [ci.movements.labels[i] for i in cos(image_features, movement_features_array).topk(2).indices][0]
+    movement = [ci.movements.labels[i] for i in cos(image_features, movement_features_array).topk(1).indices][0]
     flaves = ", ".join([ci.flavors.labels[i] for i in cos(image_features, flaves_features_array).topk(3).indices])
 
     if caption.startswith(medium):
@@ -89,26 +89,26 @@ def my_interrogate_classic(image: Image, image_features: torch.Tensor, caption: 
 
     return clip_interrogator._truncate_to_fit(prompt, ci.tokenize)
 
-def my_interrogate_fast(image: Image, image_features: torch.Tensor, caption: str, ci, cos, merged_labels, merged_array):
+def my_interrogate_fast(image: Image, image_features: torch.Tensor, caption: str):
 #     caption = ci.generate_caption(image)
 #     image_features = ci.image_to_features(image)
     
-    merged_ans = [merged_labels[i] for i in cos(image_features, merged_array).topk(10).indices]
+    merged_ans = [merged_labels[i] for i in cos(image_features, merged_array).topk(6).indices]
     return str(clip_interrogator._truncate_to_fit(caption + ", " + ", ".join(merged_ans), ci.tokenize)), merged_ans
 
-def my_interrogate(image: Image, ci) -> str:
+def my_interrogate(image: Image) -> str:
     caption = ci.generate_caption(image)
     image_features = ci.image_to_features(image)
     
     fast_prompt, flaves = my_interrogate_fast(image, image_features, caption)
 #     flaves = [merged_labels[i] for i in cos(image_features, merged_array).topk(16).indices]
     
-#     best_prompt, best_sim = caption, ci.similarity(image_features, caption)
-#     best_prompt = ci.chain(image_features, flaves, best_prompt, best_sim, min_count=2, max_count=8, desc="Flavor chain")
+    best_prompt, best_sim = caption, ci.similarity(image_features, caption)
+    best_prompt = ci.chain(image_features, flaves, best_prompt, best_sim, min_count=2, max_count=4, desc="Flavor chain")
     
     classic_prompt = my_interrogate_classic(image, image_features, caption)
 #     candidates = [caption, classic_prompt, fast_prompt, best_prompt]
-    candidates = [caption, classic_prompt, fast_prompt]
+    candidates = [caption, classic_prompt, best_prompt]
     return candidates[np.argmax(ci.similarities(image_features, candidates))]
 
 
@@ -171,6 +171,7 @@ def clip_interrogator_init():
     return ci, cos, medium_features_array, movement_features_array, flaves_features_array, merged_array, merged_labels
 
 
+ci, cos, medium_features_array, movement_features_array, flaves_features_array, merged_array, merged_labels = clip_interrogator_init()
 
 
 if __name__ == "__main__":
@@ -184,16 +185,16 @@ if __name__ == "__main__":
             imgId_eId.append(image + "_" + str(num))
     print(imgId_eId[0])
 
-    ci, cos, medium_features_array, movement_features_array, flaves_features_array, merged_array, merged_labels = clip_interrogator_init()
     prompts = []
  
     image_path = str(my_config.image_path) + "/"
     for image in images:
         tmp_path = image_path + image
         img = Image.open(tmp_path).convert("RGB")
-        caption = ci.generate_caption(img)
-        image_features = ci.image_to_features(img)
-        img_ans = my_interrogate_classic(img, image_features, caption, ci, cos, medium_features_array, movement_features_array, flaves_features_array)
+        img_ans = my_interrogate(img)
+        # caption = ci.generate_caption(img)
+        # image_features = ci.image_to_features(img)
+        # img_ans = my_interrogate_classic(img, image_features, caption, ci, cos, medium_features_array, movement_features_array, flaves_features_array)
         prompts.append(img_ans)
 
     prompts_dist = {}
