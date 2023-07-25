@@ -3,7 +3,7 @@
 `ImagetoPrompts` is used to [Stable Diffusion - Image to Prompts](https://www.kaggle.com/competitions/stable-diffusion-image-to-prompts/overview), and now is 237/1231. Public Score 0.58145, Private Score 0.57859.
 
 ## Project Structure
-________
+———
     |___data_output
         |_____output.csv
     |___temp_test
@@ -14,7 +14,7 @@ ________
         |____test_vit_gpt2.py
         |____test.ipynb
     |___cal_cv_model.py
-    |___main.ipynb
+    |___main.ipynbk
     |___README.md
 
 - data_output save the output.
@@ -35,6 +35,19 @@ ________
 ## Reference
 
 - [OFA](https://github.com/OFA-Sys/OFA)
+
 - [CoCa](https://github.com/UKPLab/sentence-transformers)
+
 - [pharmapsychotic/interrogator](https://github.com/pharmapsychotic/clip-interrogator)
+
 - And other public notes & codes from kaggle, click [this](https://www.kaggle.com/competitionsstable-diffusion-image-to-prompts) to find more.
+
+- ```
+    @misc{stable-diffusion-image-to-prompts,
+        author = {Ashley Chow, inversion, Will Cukierski},
+        title = {Stable Diffusion - Image to Prompts},
+        publisher = {Kaggle},
+        year = {2023},
+        url = {https://kaggle.com/competitions/stable-diffusion-image-to-prompts}
+    }
+    ```
