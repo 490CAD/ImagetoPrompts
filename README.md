@@ -3,8 +3,7 @@
 `ImagetoPrompts` is used to [Stable Diffusion - Image to Prompts](https://www.kaggle.com/competitions/stable-diffusion-image-to-prompts/overview), and now is 237/1231. Public Score 0.58145, Private Score 0.57859.
 
 ## Project Structure
-
---------------
+________
     |___data_output
         |_____output.csv
     |___temp_test
